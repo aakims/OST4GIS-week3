@@ -43,7 +43,7 @@ Instructions: Write a function that returns true if a number is odd
               Use functions "isEven" and "not" somehow in the definition.
 ===================== */
 
-var isOdd = function() {};
+var isOdd = function(num) {return not(isEven(num));};
 
 console.log('isOdd success:', isOdd(4) === false);
 
@@ -51,9 +51,51 @@ console.log('isOdd success:', isOdd(4) === false);
 Instructions: Write a function that takes a list of numbers and returns a list with only numbers above 10
 ===================== */
 
-var filterOutLessThan10 = function() {};
+var filterOutLessThan10 = function(Arr) {
+  var resultArr = [];
+  for (var numIndex = 0; numIndex < Arr.length; numIndex++) {
+    if (Arr[numIndex] > 10) {
+      resultArr.push(Arr[numIndex]);
+    }
+  }
+  return resultArr;
+};
 
-console.log('filterOutLessThan10 success:', filterOutLessThan10([4, 11]) === [11]);
+//TODO: array equality + return boolean + when break?
+/* this version returns true for
+compareNumArrays([1,2,3],[1,2,7]) why?
+
+var compareNumArrays = function (Arr1, Arr2) {
+  if (Arr1.length != Arr2.length) {
+    return false;
+  }
+  else {
+    for (numIndex = 0; numIndex < Arr1.length; numIndex++) {
+      if (Arr1[numIndex] !== Arr2[numIndex]) {
+        return false;
+      }
+      else return true;
+    }
+  }
+};
+*/
+
+var compareNumArrays = function (Arr1, Arr2) {
+  var falseCount = 0;
+  if (Arr1.length != Arr2.length) {
+    return false;
+  }
+  else {
+    for (numIndex = 0; numIndex < Arr1.length; numIndex++) {
+      if (Arr1[numIndex] != Arr2[numIndex]) {
+        falseCount = falseCount + 1; // would rather not use this method
+      }
+    }
+  }
+  if (falseCount > 0) {return false;} else return true;
+};
+
+console.log('filterOutLessThan10 success:', compareNumArrays(filterOutLessThan10([4, 11]), [11]));
 
 /* =====================
 Stretch goal
@@ -62,6 +104,14 @@ Instructions: Let's bring it all together. Write a function that filters a list 
               2. a function that takes a value and returns true (to keep a number) or false (to toss it out)
 ===================== */
 
-var filter = function(array, func) {};
+var filter = function(array, func) {
+  var resultArray = [];
+  for (var numIndex = 0; numIndex < array.length; numIndex++) {
+    if (func(array[numIndex]) === true) {
+      resultArray.push(array[numIndex]);
+    }
+  }
+  return resultArray;
+};
 
-console.log('filter success:', filter([4, 11], isOdd) === [11]);
+console.log('filter success:', compareNumArrays(filter([4, 11], isOdd),[11]));

@@ -33,7 +33,6 @@ var largeStationList = _.filter(data, isTwentyPlus);
 
 var largeStationCount = _.countBy(data, isTwentyPlus)["true"];
 
-console.log(largeStationList);
-console.log(largeStationCount);
+//console.log(largeStationCount);
 
-//console.log("We have total of", largeStationCount, " stations with more than 20 docks: ", largeStationList);
+console.log("We have total of", largeStationCount, " stations with more than 20 docks. See the station information for all of those docks: ", largeStationList);

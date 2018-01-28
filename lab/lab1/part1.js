@@ -64,10 +64,10 @@ var countItem = function(arr, target) {
   var count = 0;
   for (var index = 0; index < arr.length; index = index + 1) {
     if (arr[index] === target) {
-      count = count + 1;
+      count = count + 1;  //TODO: what I *don't* want 
     }
   }
-  return count; 
+  return count;
 };
 
 console.log('countItem success:', countItem([1, 2, 3, 4, 5, 4, 4], 4) === 3);
