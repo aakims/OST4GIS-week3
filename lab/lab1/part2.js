@@ -61,6 +61,11 @@ var filterOutLessThan10 = function(Arr) {
   return resultArr;
 };
 
+// using underscore.js
+var filterOutLessThan10With_= function(arr) {
+  return _.filter(arr, function(num) {return num > 10;});
+};
+
 //TODO: array equality + return boolean + when break?
 /* this version returns true for
 compareNumArrays([1,2,3],[1,2,7]) why?
@@ -96,6 +101,8 @@ var compareNumArrays = function (Arr1, Arr2) {
 };
 
 console.log('filterOutLessThan10 success:', compareNumArrays(filterOutLessThan10([4, 11]), [11]));
+console.log('filterOutLessThan10 (w/ _.) success:', _.isEqual(filterOutLessThan10With_([4,11]),[11]));
+
 
 /* =====================
 Stretch goal
@@ -115,3 +122,4 @@ var filter = function(array, func) {
 };
 
 console.log('filter success:', compareNumArrays(filter([4, 11], isOdd),[11]));
+console.log('_.filter success:', _.isEqual(_.filter([4,11], isOdd), [11]));
