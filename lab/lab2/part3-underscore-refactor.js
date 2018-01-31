@@ -101,8 +101,72 @@
 
   // filter data
   // has not been refactored; using the given loop-method.
-  var filtered_data_ = [];
-  var filtered_out_ = [];
+  //var filtered_data_ = [];
+  //var filtered_out_ = [];
+
+
+  // filtering conditions
+
+  /* would something like this useful?
+  var isitOrNot = function(schoolObj, filterKey, condition) {
+    if (condition) {
+      schoolObj.filterKey = true;
+    } else schoolObj.filterKey = false;
+  };
+  */
+
+  var isitOpen = function (schoolObj) {
+    schoolObj.isOpen = schoolObj.ACTIVE.toUpperCase() === 'OPEN';
+  };
+
+  var isitPublic = function (schoolObj) {
+    schoolObj.isPublic = (schoolObj.TYPE.toUpperCase() !== 'CHARTER' ||
+                          schoolObj.TYPE.toUpperCase() !== 'PRIVATE');
+  };
+
+  var isitSchool = function (schoolObj) {
+    schoolObj.isSchool = (schoolObj.HAS_KINDERGARTEN ||
+                          schoolObj.HAS_ELEMENTARY ||
+                          schoolObj.HAS_MIDDLE_SCHOOL ||
+                          schoolObj.HAS_HIGH_SCHOOL);
+  };
+
+  var meetsMinimumEnrollment = function (schoolObj) {
+    schoolObj.meetsMinimumEnrollment = schoolObj.ENROLLMENT > minEnrollment;
+  };
+
+  var meetsZipCondition = function (schoolObj) {
+    if (_.contains(acceptedZipcodes, schoolObj.ZIPCODE)) {
+      return false;
+    } else return true;
+  };
+
+  var assignFilterCond = function (data, filterFunction) {
+    _.each(data, filterFunction);
+  };
+
+  assignFilterCond(schools_, isitOpen);
+  assignFilterCond(schools_, isitPublic);
+  assignFilterCond(schools_, isitSchool);
+  assignFilterCond(schools_, meetsMinimumEnrollment);
+  //TODO: how do I chain some of these together?
+
+  //filter check
+  console.log(schools_[4]); // yes
+
+  var masterFilter = function (schoolObj) {
+    return schoolObj.isOpen &&
+      schoolObj.isSchool &&
+      schoolObj.meetsMinimumEnrollment &&
+      meetsZipCondition(schoolObj);
+  };  // what would !meetsZipCondition(schoolObj) do?
+
+
+  var filtered_data_ = _.filter(schools_, masterFilter);
+  var filtered_out_ = _.difference(schools_, filtered_data_);
+
+
+/*
   for (var i = 0; i < schools_.length - 1; i++) {
     isOpen = schools_[i].ACTIVE.toUpperCase() == 'OPEN';
     isPublic = (schools_[i].TYPE.toUpperCase() !== 'CHARTER' ||
@@ -124,15 +188,9 @@
       filtered_out_.push(schools_[i]);
     }
   }
+  */
   console.log('Included by underscore:', filtered_data_.length);
   console.log('Excluded by underscore:', filtered_out_.length);
-
-  /* can this be useful? is this overkill?
-  var cleanData = function(data, func1, func2, func3, func4) {
-    _.each(data, func1);
-
-  }
-  */
 
 
   /*****************************************
@@ -167,7 +225,7 @@
   // filter data
   var filtered_data = [];
   var filtered_out = [];
-  for (var i = 0; i < schools.length - 1; i++) {
+  for (var i = 0; i < schools.length; i++) {
     isOpen = schools[i].ACTIVE.toUpperCase() == 'OPEN';
     isPublic = (schools[i].TYPE.toUpperCase() !== 'CHARTER' ||
                 schools[i].TYPE.toUpperCase() !== 'PRIVATE');
@@ -197,6 +255,9 @@
   *****************************************/
 // ref: https://stackoverflow.com/questions/19590865/from-an-array-of-objects-extract-value-of-a-property-as-array
 
+  //console.log(filtered_data_);
+  console.log(schools.length, schools_.length);
+
   var inOriginal = filtered_data.map(a => a.OBJECTID);
   var outOfOriginal = filtered_out.map(a => a.OBJECTID);
   var inUnderScore = filtered_data_.map(a => a.OBJECTID);
@@ -209,6 +270,9 @@
               'Only in underscore filteredData:', _.difference(inUnderScore, inOriginal), '\n',
               'Only excluded from original filteredData:', _.difference(outOfOriginal, outOfUnderScore), '\n',
               'Only excluded from underscore filteredData:', _.difference(outOfUnderScore, outOfOriginal), '\n');
+
+  console.log('two methods results are the same: ', _.isEqual(inOriginal, inUnderScore));
+
 
 /* zipcode debugging check
 
@@ -225,8 +289,40 @@
 */
 
 
-  // main loop
-  var color;
+  // refactored main loop
+
+  //styling options
+  var colorStyle = {HAS_HIGH_SCHOOL: '#0000FF', HAS_MIDDLE_SCHOOL: '#00FF00', theRest: '##FF0000'};
+  var color, circRadius;
+  var generatePathOpts = function (schoolObj) {
+
+    if (schoolObj['_.keys(colorStyle)[0]']) {
+      color = _.propertyOf(_.keys(colorStyle)[0])(colorStyle);
+    } else if (schoolObj['_.keys(colorStyle)[1]']) {
+      color = _.propertyOf(_.keys(colorStyle)[1])(colorStyle);
+    } else {
+      color = _.propertyOf(_.keys(colorStyle)[2])(colorStyle);
+    }
+
+    //console.log(_.keys(colorStyle)[1]);
+    circRadius = schoolObj.ENROLLMENT / 30;
+
+    return {'radius': circRadius, 'fillColor': color};
+  };
+
+
+  var addMarker = function (schoolObj) {
+   L.circleMarker([schoolObj.Y, schoolObj.X], generatePathOpts(schoolObj))
+    .bindPopup(schoolObj.FACILNAME_LABEL)
+    .addTo(map);
+  };
+
+  _.each(schools_, addMarker);
+
+
+/*
+  // main loop - original
+  //var color;
   for (var i = 0; i < filtered_data.length - 1; i++) {
     isOpen = filtered_data[i].ACTIVE.toUpperCase() == 'OPEN';
     isPublic = (filtered_data[i].TYPE.toUpperCase() !== 'CHARTER' ||
@@ -242,11 +338,12 @@
       color = '##FF0000';
     }
     // The style options
-    var pathOpts = {'radius': filtered_data[i].ENROLLMENT / 30,
-                    'fillColor': color};
+    //var pathOpts = {'radius': filtered_data[i].ENROLLMENT / 30,
+    //                'fillColor': color};
     L.circleMarker([filtered_data[i].Y, filtered_data[i].X], pathOpts)
       .bindPopup(filtered_data[i].FACILNAME_LABEL)
       .addTo(map);
   }
+  */
 
 })();
