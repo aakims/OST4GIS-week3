@@ -87,7 +87,7 @@
 
   // 2.3 cleanGradeLevel():
   var cleanGradeLevel = function(schoolObj) {
-    if (_.isNumber(schoolObj.GRADE_ORG)) {
+    if (_.isNumber(schoolObj.GRADE_LEVEL)) { 
       schoolObj.HAS_KINDERGARTEN = withinGradeRange(schoolObj.GRADE_LEVEL, 0, 1); schoolObj.HAS_ELEMENTARY =  withinGradeRange(schoolObj.GRADE_LEVEL, 1, 6); schoolObj.HAS_MIDDLE_SCHOOL = withinGradeRange(schoolObj.GRADE_LEVEL, 6, 9); schoolObj.HAS_HIGH_SCHOOL = withinGradeRange(schoolObj.GRADE_LEVEL, 9, 13);
     } else {
       schoolObj.HAS_KINDERGARTEN = doesInclude(schoolObj.GRADE_LEVEL, 'K'); schoolObj.HAS_ELEMENTARY = doesInclude(schoolObj.GRADE_LEVEL, 'ELE'); schoolObj.HAS_MIDDLE_SCHOOL = doesInclude(schoolObj.GRADE_LEVEL, 'MID'); schoolObj.HAS_HIGH_SCHOOL = doesInclude(schoolObj.GRADE_LEVEL, 'HIGH');
@@ -290,7 +290,7 @@
 
 
   // refactored main loop
-
+/*
   //styling options
   var colorStyle = {HAS_HIGH_SCHOOL: '#0000FF', HAS_MIDDLE_SCHOOL: '#00FF00', theRest: '##FF0000'};
   var color, circRadius;
@@ -318,9 +318,9 @@
   };
 
   _.each(schools_, addMarker);
+*/
 
 
-/*
   // main loop - original
   //var color;
   for (var i = 0; i < filtered_data.length - 1; i++) {
@@ -338,12 +338,12 @@
       color = '##FF0000';
     }
     // The style options
-    //var pathOpts = {'radius': filtered_data[i].ENROLLMENT / 30,
-    //                'fillColor': color};
+    var pathOpts = {'radius': filtered_data[i].ENROLLMENT / 30,
+                    'fillColor': color};
     L.circleMarker([filtered_data[i].Y, filtered_data[i].X], pathOpts)
       .bindPopup(filtered_data[i].FACILNAME_LABEL)
       .addTo(map);
   }
-  */
+
 
 })();
