@@ -66,25 +66,6 @@ var filterOutLessThan10With_= function(arr) {
   return _.filter(arr, function(num) {return num > 10;});
 };
 
-//TODO: array equality + return boolean + when break?
-/* this version returns true for
-compareNumArrays([1,2,3],[1,2,7]) why?
-
-var compareNumArrays = function (Arr1, Arr2) {
-  if (Arr1.length != Arr2.length) {
-    return false;
-  }
-  else {
-    for (numIndex = 0; numIndex < Arr1.length; numIndex++) {
-      if (Arr1[numIndex] !== Arr2[numIndex]) {
-        return false;
-      }
-      else return true;
-    }
-  }
-};
-*/
-
 var compareNumArrays = function (Arr1, Arr2) {
   var falseCount = 0;
   if (Arr1.length != Arr2.length) {
